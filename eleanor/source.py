@@ -299,6 +299,28 @@ class Source(object):
             raise SearchError("Tess has not (yet) observed your target.")
 
         else:
+            # Exclude any results that show duplicate data for each sector - only keep
+            # results that show up in a Tesscut search result.
+            skycoords = SkyCoord(ra = self.coords[0], dec = self.coords[1], unit = (u.deg, u.deg))        
+            md = Tesscut.get_sectors(coordinates = skycoords)
+
+            keep = []
+            for index in range(len(sectors)):
+                s = sectors[index]
+                strlen = np.floor(np.log10(s)).astype(int)+1
+                secstr = '0000'[:-strlen] + str(s)
+                string = f'tess-s{secstr}-{cameras[index]}-{chips[index]}'
+                if string in md['sectorName']:
+                    keep.append(index)
+                
+            if len(keep) < len(sectors):
+                cameras = result[4][result[3] <= maxsector][keep]
+                chips = result[5][result[3] <= maxsector][keep]
+                cols = result[6][result[3] <= maxsector][keep]
+                rows = result[7][result[3] <= maxsector][keep]
+                sectors = result[3][result[3] <= maxsector][keep]
+
+
             # Handles cases where users can pass in their sector
             if type(self.usr_sec) == int:
                 arg = np.argwhere(sectors == self.usr_sec)[0]

@@ -1,5 +1,5 @@
 import math
-import tensorflow as tf
+# import tensorflow as tf
 from astropy.io import fits as pyfits
 from lightkurve.utils import channel_to_module_output
 import numpy as np

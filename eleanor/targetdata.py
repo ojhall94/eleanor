@@ -22,7 +22,7 @@ import os.path
 import warnings
 import pickle
 
-import tensorflow as tf
+# import tensorflow as tf
 from tqdm import tqdm
 
 from .ffi import use_pointing_model, load_pointing_model, centroid_quadratic
